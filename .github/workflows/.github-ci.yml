@@ -1,0 +1,57 @@
+name: CI/CD
+on:
+  push:
+    branches: ["main"]
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+# some references:
+# https://github.com/actions/github-script/blob/1f16022c7518aad314c43abcd029895291be0f52/dist/index.js#L2697
+# https://docs.github.com/en/rest/releases/releases?apiVersion=2022-11-28
+jobs:
+  use-github-script:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v4
+          with:
+            fetch-depth: 2
+        - name: Generate release notes
+          if: false
+          uses: actions/github-script@v6
+          with:
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            result-encoding: string
+            script: |
+              const my_tag_name = "v2.0.0";
+              const my_previous_tag_name = "v1.0.0";
+              const fs = require('fs');
+              const filePath = '${{github.workspace}}/build/comment_id.txt';
+              const response = await github.rest.repos.generateReleaseNotes({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag_name: my_tag_name,
+                previous_tag_name: my_previous_tag_name
+              });
+              console.log(response)
+            # const notes = response.data;
+            # fs.writeFileSync(filePath, notes);
+        - name: Create a new file
+          run: |
+            touch ${{github.workspace}}/log.txt
+            git hash-object -w ${{github.workspace}}/log.txt
+            git update-index --add ${{github.workspace}}/log.txt
+            echo "object_tree=`git write-tree`" >> "$GITHUB_ENV"
+        - name: Commit to repo
+          uses: actions/github-script@v6
+          with:
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            script: |
+                const commit_msg = "feat: example of add a file"
+                const object_tree = "${{ env.object_tree}}"";
+                const response = await github.rest.git.createCommit({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    message: commit_msg,
+                    tree: object_tree
+                });
+            
