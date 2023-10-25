@@ -42,6 +42,7 @@ jobs:
             git hash-object -w ${{github.workspace}}/log.txt
             git update-index --add ${{github.workspace}}/log.txt
             echo "object_tree=`git write-tree`" >> "$GITHUB_ENV"
+            echo "commit_tree=`git commit-tree ${{ env.object_tree}} -p ${{ env.parent}}`" >> "$GITHUB_ENV"
         - name: Commit to repo
           uses: actions/github-script@v6
           with:
@@ -49,12 +50,12 @@ jobs:
             script: |
                 const commit_msg = "feat: example of add a file"
                 const parent = "${{ env.parent}}";
-                const object_tree = "${{ env.object_tree}}";
+                const commit_tree = "${{ env.commit_tree}}";
                 const response = await github.rest.git.createCommit({
                     owner: context.repo.owner,
                     repo: context.repo.repo,
                     message: commit_msg,
-                    tree: object_tree,
+                    tree: commit_tree,
                     parents: [parent]
                 });
             
