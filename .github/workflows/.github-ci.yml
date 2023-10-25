@@ -37,6 +37,8 @@ jobs:
             # fs.writeFileSync(filePath, notes);
         - name: Create a new file
           run: |
+            git config --global user.email "you@example.com"
+            git config --global user.name "Your Name"
             touch ${{github.workspace}}/log.txt
             parent_sha=`git rev-parse HEAD`
             echo "parent=${parent_sha}" >> "$GITHUB_ENV"
