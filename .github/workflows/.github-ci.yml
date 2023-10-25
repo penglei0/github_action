@@ -38,11 +38,11 @@ jobs:
         - name: Create a new file
           run: |
             touch ${{github.workspace}}/log.txt
-            echo "parent=`git rev-parse HEAD`" >> "$GITHUB_ENV"
+            parent=`git rev-parse HEAD`
             git hash-object -w ${{github.workspace}}/log.txt
             git update-index --add ${{github.workspace}}/log.txt
-            echo "object_tree=`git write-tree`" >> "$GITHUB_ENV"
-            echo "commit_tree=`git commit-tree ${{ env.object_tree}} -p ${{ env.parent}}`" >> "$GITHUB_ENV"
+            object_tree=`git write-tree`
+            echo "commit_tree=`git commit-tree ${object_tree} -p ${parent}`" >> "$GITHUB_ENV"
         - name: Commit to repo
           uses: actions/github-script@v6
           with:
