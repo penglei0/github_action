@@ -49,7 +49,7 @@ jobs:
             script: |
                 const commit_msg = "feat: example of add a file"
                 const parent = "${{ env.parent}}";
-                const object_tree = "${{ env.object_tree}}"";
+                const object_tree = "${{ env.object_tree}}";
                 const response = await github.rest.git.createCommit({
                     owner: context.repo.owner,
                     repo: context.repo.repo,
