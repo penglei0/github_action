@@ -34,6 +34,7 @@ c530ff232192d837b7450d627bdc6e40a69518ec
 ```bash
 # which is the tree object, which is the parent commit
 git commit-tree c530ff232192d837b7450d627bdc6e40a69518ec -m "feat: test commit" -p df0a78c05b4ac0a11ddd63437248a11499e465e7
+8e9a6016075ad3431251a529f02579e99fec6396
 ```
 
 ## 5. Update the reference of the branch to point to the new commit SHA
