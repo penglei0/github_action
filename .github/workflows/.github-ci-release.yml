@@ -10,6 +10,8 @@ on:
 jobs:
   use-github-script:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # release changes require contents write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -22,19 +24,7 @@ jobs:
           touch ${{github.workspace}}/build/log.txt
           tar -cvf ${{github.workspace}}/build/asserts.tar ${{github.workspace}}/build/*
 
-      - name: Upload binary asserts
-        uses: actions/github-script@v6
-        if: ${{ github.event_name == 'release' }}
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          result-encoding: string
-          script: |
-            console.log('tag name: ${{ github.event.release.tag_name }}');
-            console.log('release name: ${{ github.event.release.name }}');
-            const response = await github.rest.repos.uploadReleaseAsset({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                release_id: ${{ github.event.release.tag_name }},
-                content_type: application/x-tar,
-                data: @'${{github.workspace}}/build/asserts.tar'
-              });
+      - name: Upload Release Asset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload ${{ github.event.release.tag_name }} ${{github.workspace}}/build/asserts.tar
