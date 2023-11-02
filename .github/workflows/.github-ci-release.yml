@@ -1,0 +1,44 @@
+name: workflow-release
+on:
+  release:
+    branches: ["master", "main"]
+    types:
+      - created
+      - published
+
+# https://github.com/actions/github-script/blob/1f16022c7518aad314c43abcd029895291be0f52/dist/index.js#L2697
+# https://docs.github.com/en/rest/releases/releases?apiVersion=2022-11-28
+jobs:
+  use-github-script:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Prepare asserts
+        run: |
+          mkdir -p ${{github.workspace}}/build
+          touch ${{github.workspace}}/build/comment_id.txt
+          touch ${{github.workspace}}/build/log.txt
+          tar -cvf ${{github.workspace}}/build/asserts.tar ${{github.workspace}}/build/*
+
+      - name: Upload binary asserts
+        uses: actions/github-script@v6
+        if: ${{ github.event_name == 'release' }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          result-encoding: string
+          script: |
+            console.log('tag name: ${{ github.event.release.tag_name }}');
+            console.log('release name: ${{ github.event.release.name }}');
+            const fs = require('fs');
+            for (let file of await fs.readdir('./*.tar')) {
+              console.log('uploading', file);
+              const response = await github.rest.repos.uploadReleaseAsset({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: ${{ github.event.release.tag_name }},
+                data: await fs.readFile(`./${file}`)
+              });
+            }
