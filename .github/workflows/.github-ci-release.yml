@@ -39,6 +39,6 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 release_id: ${{ github.event.release.tag_name }},
-                data: await fs.readFile(`./${file}`)
+                data: await fs.readFile(${{github.workspace}}/build/asserts.tar)
               });
             }
