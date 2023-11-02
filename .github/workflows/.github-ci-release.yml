@@ -4,7 +4,6 @@ on:
     branches: ["master", "main"]
     types:
       - created
-      - published
 
 # https://github.com/actions/github-script/blob/1f16022c7518aad314c43abcd029895291be0f52/dist/index.js#L2697
 # https://docs.github.com/en/rest/releases/releases?apiVersion=2022-11-28
