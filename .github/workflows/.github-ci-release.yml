@@ -31,13 +31,10 @@ jobs:
           script: |
             console.log('tag name: ${{ github.event.release.tag_name }}');
             console.log('release name: ${{ github.event.release.name }}');
-            const fs = require('fs');
-            for (let file of await fs.readdir('./*.tar')) {
-              console.log('uploading', file);
-              const response = await github.rest.repos.uploadReleaseAsset({
+            const response = await github.rest.repos.uploadReleaseAsset({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 release_id: ${{ github.event.release.tag_name }},
-                data: await fs.readFile(${{github.workspace}}/build/asserts.tar)
+                content_type: application/x-tar,
+                data: @'${{github.workspace}}/build/asserts.tar'
               });
-            }
