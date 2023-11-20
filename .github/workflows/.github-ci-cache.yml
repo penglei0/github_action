@@ -1,0 +1,20 @@
+name: cache workflow
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  cache-apt-install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: cache apt-install
+        id: cache-apt-install
+        uses: actions/cache@v3
+        with:
+          path: ~/.apt-cache
+          key: apt-cache-${{ runner.os }}-
+      - name: apt-install openvswitch-switch
+        if: steps.cache-apt-install.outputs.cache-hit != 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openvswitch-switch
