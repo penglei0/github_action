@@ -7,14 +7,24 @@ jobs:
   cache-apt-install:
     runs-on: ubuntu-latest
     steps:
-      - name: cache apt-install
-        id: cache-apt-install
+      - name: Restore Image Cache if it exists
+        id: cache-docker
         uses: actions/cache@v3
         with:
-          path: /home/runner/.apt-cache
-          key: apt-cache-${{ runner.os }}-
-      - name: apt-install openvswitch-switch
-        if: steps.cache-apt-install.outputs.cache-hit != 'true'
+          path: ${{github.workspace}}/ci/cache/docker/my
+          key: cache-docker-image
+
+      - name: Update Image Cache if cache miss
+        if: steps.cache-docker.outputs.cache-hit != 'true'
+        working-directory: ${{github.workspace}}/my-docker
         run: |
-          sudo apt-get update
-          sudo apt-get install -y openvswitch-switch
+          docker-compose build
+
+      - name: Use Image Cache if cache hit
+        working-directory: ${{github.workspace}}/
+        if: steps.cache-docker.outputs.cache-hit == 'true'
+        run: docker image load --input ./ci/cache/docker/my/github_action.tar
+
+      - name: Start containers
+        working-directory: ${{github.workspace}}/my-docker
+        run: docker compose up -d
