@@ -21,6 +21,7 @@ jobs:
         if: steps.cache-docker.outputs.cache-hit != 'true'
         working-directory: ${{github.workspace}}/my-docker
         run: |
+          docker-compose --version
           docker-compose build
 
       - name: Use Image Cache if cache hit
