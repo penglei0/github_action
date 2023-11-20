@@ -11,7 +11,7 @@ jobs:
         id: cache-apt-install
         uses: actions/cache@v3
         with:
-          path: ~/.apt-cache
+          path: /home/runner/.apt-cache
           key: apt-cache-${{ runner.os }}-
       - name: apt-install openvswitch-switch
         if: steps.cache-apt-install.outputs.cache-hit != 'true'
