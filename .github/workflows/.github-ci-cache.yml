@@ -26,8 +26,7 @@ jobs:
           /usr/local/bin/docker-compose version
           /usr/local/bin/docker-compose build
           mkdir -p ${{github.workspace}}/ci/cache/docker/my/
-          sudo docker image ls
-          sudo docker image save github_action:latest --output ${{github.workspace}}/ci/cache/docker/my/github_action.tar
+          docker image save github_action:latest --output ${{github.workspace}}/ci/cache/docker/my/github_action.tar
 
       - name: Use Image Cache if cache hit
         working-directory: ${{github.workspace}}/
