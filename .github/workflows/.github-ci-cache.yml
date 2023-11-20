@@ -7,6 +7,9 @@ jobs:
   cache-apt-install:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - name: Restore Image Cache if it exists
         id: cache-docker
         uses: actions/cache@v3
