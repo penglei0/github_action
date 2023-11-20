@@ -21,8 +21,10 @@ jobs:
         if: steps.cache-docker.outputs.cache-hit != 'true'
         working-directory: ${{github.workspace}}/my-docker
         run: |
-          docker-compose --version
-          docker-compose build
+          sudo curl -L https://github.com/docker/compose/releases/download/v2.18.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          /usr/local/bin/docker-compose version
+          /usr/local/bin/docker-compose build
 
       - name: Use Image Cache if cache hit
         working-directory: ${{github.workspace}}/
