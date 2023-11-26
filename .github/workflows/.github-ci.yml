@@ -24,6 +24,8 @@ jobs:
             echo "SUPPORT_TREMONT=false" >> $GITHUB_ENV
           fi
           echo "########## ${{ env.SUPPORT_TREMONT }}"
+          echo "########## ${{ env.BUILD_TYPE }}"
+          echo "########## $SUPPORT_TREMONT"
 
   use-github-script:
     runs-on: ubuntu-latest
