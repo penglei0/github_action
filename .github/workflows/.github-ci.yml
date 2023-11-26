@@ -5,10 +5,26 @@ on:
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
+  SUPPORT_TREMONT: false
 # some references:
 # https://github.com/actions/github-script/blob/1f16022c7518aad314c43abcd029895291be0f52/dist/index.js#L2697
 # https://docs.github.com/en/rest/releases/releases?apiVersion=2022-11-28
 jobs:
+  arch-type-detect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: arch type detect
+        run: |
+          tremont_string=$(gcc -c -Q -march=native --help=target| grep tremont)
+          if [ -n "$tremont_string" ]; then
+            echo "tremont arch is supported"
+            echo "SUPPORT_TREMONT=true" >> $GITHUB_ENV
+          else
+            echo "tremont arch is not supported"
+            echo "SUPPORT_TREMONT=false" >> $GITHUB_ENV
+          fi
+          echo "########## ${{ env.SUPPORT_TREMONT }}"
+
   use-github-script:
     runs-on: ubuntu-latest
     if: ${{ github.event_name != 'release' }}
