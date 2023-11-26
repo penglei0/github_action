@@ -26,6 +26,11 @@ jobs:
           echo "########## ${{ env.SUPPORT_TREMONT }}"
           echo "########## ${{ env.BUILD_TYPE }}"
           echo "########## $SUPPORT_TREMONT"
+      - name: env var can only be read in next step
+        run: |
+          echo "########## ${{ env.SUPPORT_TREMONT }}"
+          echo "########## ${{ env.BUILD_TYPE }}"
+          echo "########## $SUPPORT_TREMONT"
 
   use-github-script:
     runs-on: ubuntu-latest
