@@ -1,7 +1,7 @@
 # github_action
 learn how to use github action
 
-# Git
+# Git raw operation
 
 ## 1.Get the last commit hash
 
@@ -41,4 +41,25 @@ git commit-tree c530ff232192d837b7450d627bdc6e40a69518ec -m "feat: test commit" 
 
 ```bash
 git update-ref refs/heads/main 8e9a6016075ad3431251a529f02579e99fec6396
+```
+
+# Get remote pull-request
+
+```bash
+# the id of pull-request is 1
+git -c protocol.version=2 fetch --prune --no-recurse-submodules origin pull/1/merge:my_local_pr_name
+
+remote: Enumerating objects: 1, done.
+remote: Counting objects: 100% (1/1), done.
+remote: Total 1 (delta 0), reused 0 (delta 0), pack-reused 0
+Unpacking objects: 100% (1/1), 871 bytes | 871.00 KiB/s, done.
+From github.com:penglei0/example
+ * [new ref]         refs/pull/1/merge -> my_local_pr_name
+
+# checkout to `my_local_pr_name`
+git checkout my_local_pr_name
+
+# get all impacted files in current PR
+git diff --name-only -r HEAD^1 HEAD
+
 ```
